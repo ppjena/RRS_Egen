@@ -1,0 +1,890 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link  rel="stylesheet" href="../css/lib/bootstrap.min.css" type="text/css">
+    <link  rel="stylesheet" href="../css/common.css" type="text/css">
+
+    <script type="text/javascript" src="../js/lib/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../js/lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/lib/bootstrap-validator.js"></script>
+    <script type="text/javascript" src="../js/owner.js"></script>
+    <script type="text/javascript" src="../js/date_format.js"></script>
+
+    <!-- angular -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+    <script type="text/javascript" src="../js/controller/owner_controller.js"></script>
+    <script>
+
+        $(document).ready(function(){
+            $( '#viewReservsationMenu' ).click();
+        });
+
+    </script>
+
+</head>
+
+<body ng-app="RRS" ng-controller="ownerController">
+<!--container div for the owner dashboard -->
+
+<div id="" class="container-fluid container_body">
+    <div class="menu-div">
+
+        <!--container div for the menu div for owner -->
+
+        <div class="container portraitMenuContainer">
+            <nav style="border-top-left-radius: 5px;border-top-right-radius: 5px;"class="navbar navbar-default" role="navigation" id="topmenu">
+                <ul class="nav navbar-nav">
+                    <li id="liMenu" class="dropdown">
+                        <a id ="viewReservsationMenu" href="#" data-toggle="collapse" data-target="#viewReserv">View Reservation</a>
+                    </li>
+                    <li class="dropdown">
+                        <a id ="viewSeatingAreaMenu" href="#" data-toggle="collapse" data-target="#viewSeating" ng-click="getTableListForToday()">View Seating Area</a>
+                    </li>
+                    <li class="dropdown">
+                        <a id ="createEditReservMenu" href="#" data-toggle="collapse" data-target="#createEdit">Create/Edit</a>
+                    </li>
+                    <li class="dropdown">
+                        <a id ="profileSetMenu" href="#" data-toggle="collapse" data-target="#profileSetting" ng-click="getProfile()">Profile/Settings</a>
+                    </li>
+                    <li class="dropdown">
+                        <a id ="assignMenu" href="#" data-toggle="collapse" data-target="#assignTable">Assign Table</a>
+                    </li>
+                    <li class="dropdown">
+                        <a id ="viewConMenu" href="#" data-toggle="collapse" data-target="#viewContact" ng-click="getContactList()">View ContactList</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!--container div for the menu content -->
+
+        <div class="container portraitMenuContainer">
+            <nav class="navbar navbar-default" role="navigation" id="submenu">
+
+                <!--container div for the view reservation menu content -->
+
+                <div class="nav navbar-nav collapse" id="viewReserv">
+
+                    <!--container div for the view reservation first page -->
+
+                    <div id = "viewReservation" class = "container">
+                        <h4 align="center">View Reservation</h4>
+                        <form data-toggle="validator"class="form-horizontal" role="form">
+
+                            <!--container div for the view reservation div where he gives the date and presses the view list button -->
+
+                            <div class="row">
+                            <div  class="form-group">
+                               <div class =" col-sm-offset-4 col-xs-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                <input  required  class="form-control " id="dateEdit" name="date" ng-model ="date" placeholder="dd-mm-yyyy">
+                            </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-5 col-xs-offset-5 col-md-offset-5 col-lg-offset-5 col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="portraitViewReserBtn btn btn-info col-sm-6 co-xs-6 col-md-6 col-lg-6" id="viewListBtn"
+                                            ng-click="getReservationList()" >View Reservation List</button>
+                                </div>
+                            </div>
+                          </div>
+                        </form>
+
+                        <!--container div for the scrollable list showing the reservation list -->
+
+                        <div id ="reservList" style="display: none;" class="container full-height" ng-model="reservations">
+                            <div class="row full-height">
+                                <div class="col-md-11 full-height">
+                                    <div class="well" id="well2">
+                                        <div id="reservationList" class="list-group">
+                                            <div ng-repeat="res in reservations">
+                                            <a href='#'  ng-click="setRes(res)"
+                                               onclick='viewDetailsofReservation()'
+                                               class='list-group-item'>
+                                            <h4 class='list-group-item-heading'>{{res.time}}</h4>
+                                            </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--container div for the next page in view reservation when he clicks on any row of the reservation list -->
+
+                    <div id = "reservationDetails" style="display: none;" class = "container" ng-model="res">
+
+                        <h4 align="center">Reservation Detail</h4>
+                        <div class="row row-centered">
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.date}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.time}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Party Size:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.partySize}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Contact number:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.contactNumber}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Status:</label>
+                                <a class="col-sm-4 co-xs-4 col-md-4 col-lg-4" href="#"
+                                   id ="statusIDEdit" data-toggle="tooltip" data-placement="top"
+                                   title="2 people are ahead of you in the reservation queue.
+                                   If they cancel their reservation you will be notified">{{res.reservationStatus.reservationStatus}}</a>
+                            </div>
+
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Table:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">Table {{res.tableName}}  Assigned</label>
+
+                            </div>
+
+                            <div class="col-sm-5 co-xs-5 col-md-5 col-lg-5 col-centered">
+                                <div class="col-sm-offset-2 col-xs-offset-2 col-md-offset-2 col-lg-offset-2  col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info" id="backBtnReserve">Back</button>
+                                </div>
+                                <div class=" col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info"  id="changeTableBtn" ng-click="getTableList(res)">Change Table</button>
+
+
+                                </div>
+
+
+                        </div>
+
+                        </div>
+
+                    </div>
+
+                    <!--container div for the table detail list when the owner hits the change table button -->
+
+                    <div id="changeTableDiv" class="container full-height" style="display:none;" ng-model="tableDetails">
+                        <h4 align="center">Table Details</h4>
+                        <div class="row full-height">
+                            <div class="col-md-11 full-height">
+                                <div class="well" id="changeTableListDiv">
+                                    <div id="changeTableList" class="list-group">
+                                        <div ng-repeat="table in tableDetails">
+                                            <div class='list-group-item'>
+                                                <h4 class='list-group-item-heading'>{{table.tableName}}</h4>
+                                                <div class='row'>
+                                                    <p class='col-sm-4  col-xs-4 col-md-4 col-lg-4'>
+                                                        <label>Since:</label>
+                                                        <label>{{table.since}}</label>
+                                                    </p>
+                                                    <p class='col-sm-2  col-xs-2 col-md-2 col-lg-2'>
+                                                        <label>Size:</label>
+                                                        <label>{{table.size}}</label>
+                                                    </p>
+                                                    <p class='col-sm-2  col-xs-2 col-md-2 col-lg-2'>
+                                                        <label>Status:</label>
+                                                        <label>{{table.status}}</label>
+                                                    </p>
+                                                    <p class='col-sm-3 col-xs-3 col-md-3 col-lg-3'>
+                                                        <button class='btn btn-info' type='button'
+                                                               onclick="hideChangeView()" ng-click='selectTable(tableDetails.confirmationCodeSelected,table.tableName)'>Select
+                                                        </button>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+
+                <!--container div for the view seating area menu content -->
+
+                    <div class="nav navbar-nav collapse" id="viewSeating">
+                        <div id="seatingListDiv" class="container full-height">
+
+                            <!--container div for the table details scrollable list -->
+
+                        <h4 align="center">View Seating Area Details</h4>
+                        <div class="row full-height">
+                            <div class="col-md-11 full-height">
+                                <div class="well" id="viewSeatingList" ng-model="tableDetails">
+                                    <div ng-repeat="table in tableDetails">
+                                        <div class='list-group-item'>
+                                            <h4 class='list-group-item-heading'>{{table.tableName}}</h4>
+                                            <div class='row'>
+                                                <p class='col-sm-4  col-xs-4 col-md-4 col-lg-4'>
+                                                    <label>Since:</label>
+                                                    <label>{{table.since}}</label>
+                                                </p>
+                                                <p class='col-sm-2  col-xs-2 col-md-2 col-lg-2'>
+                                                    <label>Size:</label>
+                                                    <label>{{table.size}}</label>
+                                                </p>
+                                                <p class='col-sm-2  col-xs-2 col-md-2 col-lg-2'>
+                                                    <label>Status:</label>
+                                                    <label>{{table.status}}</label>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                        <!--container div for the details of a reservation on clicking the confirmation code on any row of the scrollable list -->
+
+                        <div id = "seatingReservationDetails" style="display: none;" class = "container">
+
+                            <h4 align="center">Reservation Detail</h4>
+                            <div class="row row-centered">
+                                <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                    <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date:</label>
+                                    <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">17-10-2015</label>
+                                </div>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                    <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Time:</label>
+                                    <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">10:30</label>
+                                </div>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                    <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Party Size:</label>
+                                    <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">6</label>
+                                </div>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                    <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Contact number:</label>
+                                    <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">9196339620</label>
+                                </div>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                    <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Status:</label>
+                                    <a class="col-sm-4 co-xs-4 col-md-4 col-lg-4" href="#"  id ="seatingStatusID" data-toggle="tooltip" data-placement="top" title="2 people are ahead of you in the reservation queue. If they cancel their reservation you will be notified">Waiting(3/3)</a>
+
+                                    <!--<label class="control-label col-sm-4" for="contact">Waiting</label>-->
+                                </div>
+                                <div class="col-sm-5 co-xs-5 col-md-5 col-lg-5 col-centered">
+                                    <div class="col-sm-offset-4 col-xs-offset-4 col-md-offset-4 col-lg-offset-4  col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                        <button type="button" class="btn btn-info" id="backBtnSeating">Back</button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <!--container div for the create/edit menu content -->
+
+                <div class="nav navbar-nav collapse" id="createEdit">
+
+                    <!--container div for the first of the create page where the user inpute the field to create a reservation -->
+
+                    <div id="createOwnerDiv" class="container">
+                       <div style="margin-top:2%;" class = "row">
+                           <div class="form-group">
+                               <h4 class ="portrainCreateReserv col-sm-offset-3 col-xs-offset-3 col-md-offset-3 col-lg-offset-3 col-sm-6 col-xs-6 col-md-5 col-lg-6" align="center">Create Reservation</h4>
+
+                           <div class = "col-sm-2 col-xs-2 col-md-2 col-lg-2"><button type="button" class="btn btn-info" id="editExistReserv">Edit existing reservation</button></div>
+                           </div>
+                       </div>
+                        <form class="form-horizontal row" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="dateOwner">Date:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input required  class="form-control" id="dateOwner" placeholder="eg: 01-01-2016"
+                                           ng-model="res.date" name ="res.date">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="timeOwner">Time:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input required  class="form-control" id="timeOwner"  placeholder="eg: 10:10 AM"
+                                           ng-model="res.time" name ="res.time">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="sizeOwner">Party Size:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="number" required  class="form-control" id="sizeOwner"  placeholder="eg: 1"
+                                           ng-model="res.partySize" name ="res.partySize">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="contactOwner">Contact number:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="tel" required class="form-control" id="contactOwner" placeholder="eg:919-111-1111"
+                                           ng-model="res.contactNumber" name ="res.contactNumber">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6 col-sm-10 co-xs-10 col-md-10 col-lg-10">
+                                    <button type="submit" class="btn btn-info" onclick="generateOwnerConfirmation()" ng-click="createReservationForOwner()">Create</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!--container div for the confirmation sreen after the  user hits the create button -->
+
+                    <div id="confirmScreenDiv" style="display:none;" class="container" ng-model="res">
+                        <h4 align="center">Confirmation</h4>
+                        <div class="row row-centered">
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{ res.date }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{ res.time }}</label>
+                            </div>
+                            <div class="col-sm-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Party Size:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{ res.partySize }}</label>
+                            </div>
+                            <div class="col-sm-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Contact number:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{ res.contactNumber }}</label>
+                            </div>
+                            <div class="col-sm-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Status:</label>
+                                <a class="col-sm-4" href="#"  id ="statusIDOwner" data-toggle="tooltip" data-placement="top"
+                                   title="2 people are ahead of you in the reservation queue. If they cancel their reservation you will be notified">
+                                    {{ res.reservationStatus.reservationStatus }}</a>
+
+                                <!--<label class="control-label col-sm-4" for="contact">Waiting</label>-->
+                            </div>
+                            <div class="col-sm-6 co-xs-6 col-md-6 col-lg-6 col-centered">
+                                <div class="col-sm-offset-2 col-xs-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info" id="backOwnerBtn">Back</button>
+                                </div>
+                                <div class="col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info"  data-toggle="modal" data-target="#confirmPopupOwner" id="confirmOwnerBtn">Confirm</button>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                    <!--container div for the edit reservation div if the owner hits the edit existing reservation in the first screen -->
+
+                    <div id = "edit_cancelScreenDiv" class = "container" style="display:none;">
+                        <h4 align="center">Edit/Cancel Reservation</h4>
+                        <form class="form-horizontal" role="form">
+                            <div  class="form-group">
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4 " for="confirmOwnerCode">Confirmation Code:</label>
+                                <div class="col-sm-5 co-xs-5 col-md-5 col-lg-5">
+                                    <input required  class="form-control" id="confirmOwnerCode" name="confirmOwnerCode" ng-model ="confirmOwnerCode" placeholder="Confirmation code">
+                                    <div class="help-block with-errors"></div>
+                                </div> </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-5 col-xs-offset-5 col-md-offset-5 col-lg-offset-5 col-sm-2 co-xs-2 col-md-2 col-lg-2">
+                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#cancelOwnerPopup" id="cancelOwnerBtn">Cancel</button>
+                                </div>
+                                <div class="col-sm-5 co-xs-5 col-md-5 col-lg-5">
+                                    <button type="submit" class="btn btn-info" id="editOwnerReservBtn" ng-click="getReservationForOwner()">Edit</button>
+
+
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <!--container div for the edit reservation screen when the owner enters the confirmation code and hits the edit button -->
+
+                    <div id="editScreenDiv" class = "container" style = "display:none" ng-model="res">
+                        <h4 align="center">Edit Reservation</h4>
+                        <form data-toggle="validator"class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Date:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="date" required  class="form-control" id="dateEditOwner" value="{{ res.date }}" name="res.date"
+                                           ng-model="res.date">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Time:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="time" required  class="form-control" id="timeEditOwne" value="{{ res.time }}" name="res.time"
+                                           ng-model="res.time">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Party Size:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="number" required  class="form-control" id="sizeEditOwner" value="{{ res.partySize }}" name="res.partySize"
+                                           ng-model="res.partySize">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <input type="hidden" id="editConfirmationCode" value="{{ res.reservationStatus.confirmationCode }}"
+                                       name="res.reservationStatus.confirmationCode" ng-model="res.reservationStatus.confirmationCode">
+                                <input type="hidden" id="editContactNumber" value="{{ res.contactNumber }}"
+                                       name="res.contactNumber" ng-model="res.contactNumber">
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6 col-sm-10 co-xs-10 col-md-10 col-lg-10">
+                                    <button type="submit" id="editOwnerSubmit" class="btn btn-info" ng-click="editReservationForOwner()">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <!--container div for the confirmation screen when the owner hits the save button on the edit reservation screen -->
+
+                    <div id="confirmEditOwnerDiv" style="display:none;" class="container" ng-model="res">
+                        <h4 align="center">Confirmation</h4>
+                        <div class="row row-centered">
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{ res.date }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{ res.time }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Party Size:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{ res.partySize }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Contact number:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{ res.contactNumber }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Status:</label>
+                                <a class="col-sm-4 co-xs-4 col-md-4 col-lg-4" href="#"  id ="statusIDOwnerEdit" data-toggle="tooltip" data-placement="top"
+                                   title="2 people are ahead of you in the reservation queue. If they cancel their reservation you will be notified">
+                                    {{res.reservationStatus.reservationStatus}}</a>
+
+                                <!--<label class="control-label col-sm-4" for="contact">Waiting</label>-->
+                            </div>
+                            <div class="col-sm-6 co-xs-6 col-md-6 col-lg-6 col-centered">
+                                <div class="col-sm-offset-2 col-xs-offset-2 col-md-offset-2 col-lg-offset-2  col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info" id="backBtnOwnerEdit">Back</button>
+                                </div>
+                                <div class=" col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info"  data-toggle="modal" data-target="#confirmPopupOwnerEdit" id="confirmBtnEdit">Confirm</button>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+
+                <!--container div for the profile/setting menu content -->
+
+                <div class="nav navbar-nav collapse" id="profileSetting">
+
+                    <!--container div for the profile details which the owner can view -->
+
+                    <div id="profileSettingDiv" class="container" ng-model="profileDetail">
+                        <h4 align="center">Profile/Setting</h4>
+                        <div class="row row-centered">
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Name:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{profileDetail.name}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Contact:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{profileDetail.contact}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Email:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{profileDetail.email}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Address:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{profileDetail.address}}</label>
+                            </div>
+                            <div class=" checkbox col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered disabled">
+                                <!--<div class="checkbox disabled">-->
+                                    <label style="margin-left:2%;"><input type="checkbox" ng-checked="profileDetail.autoAssign==1" disabled>Auto Assign Table</label>
+
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Opening:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{profileDetail.opening}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Closing:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{profileDetail.closing}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Open days:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{profileDetail.openingDays}}</label>
+                            </div>
+
+
+                                    <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                        <button type="submit" class="col-sm-offset-4 col-xs-offset-4 col-md-offset-4 col-lg-offset-4 btn btn-info" ng-click="getProfile()" onclick="editProfile()">Edit Profile Setting</button>
+                                    </div>
+
+                            </div>
+
+                    </div>
+
+                    <!--container div for the profile/setting next page when the owner hits the edit profile button -->
+
+                    <div id="editProfileDetailsDiv" class = "container" style = "display:none" ng-model="profileDetail">
+                        <h4 align="center">Edit Reservation</h4>
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Name:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input required  class="form-control" id="nameRestaurant"  value="{{ profileDetail.name }}" name="profileDetail.name"
+                                           ng-model="profileDetail.name">
+
+                                </div>
+                            </div>
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Contact:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="tel" required  class="form-control" id="contactRestaurant" value="{{ profileDetail.contact }}" name="profileDetail.contact"
+                                           ng-model="profileDetail.contact">
+
+                                </div>
+                            </div>
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Email:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="email" required  class="form-control" id="emailRestaurant" value="{{ profileDetail.email }}" name="profileDetail.email"
+                                           ng-model="profileDetail.email">
+
+                                </div>
+                            </div>
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Address:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input required  class="form-control" id="adressRestaurant" value="{{ profileDetail.address }}" name="profileDetail.address"
+                                           ng-model="profileDetail.address">
+
+                                </div>
+                            </div>
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+
+                                <div class=" checkbox  checkbox col-sm-12 co-xs-12 col-md-12 col-lg-12 col-sm-offset-2 col-xs-offset-2 col-md-offset-2 col-lg-offset-2">
+                                    <label style="margin-left:2%;"><input type="checkbox" ng-checked="profileDetail.autoAssign==1"
+                                                                          name ="profileDetail.autoAssignNew" ng-model="profileDetail.autoAssignNew">Auto Assign Table</label>
+
+                                </div>
+                            </div>
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Opening:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input required  class="form-control" id="openingTime" value="{{ profileDetail.opening }}" name="profileDetail.opening"
+                                           ng-model="profileDetail.opening">
+
+                                </div>
+                            </div>
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Closing:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input required  class="form-control" id="closingTime" value="{{ profileDetail.closing }}" name="profileDetail.closing"
+                                           ng-model="profileDetail.closing">
+
+                                </div>
+                            </div>
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="">Open days:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="text" required  class="form-control" id="opendays" value="{{ profileDetail.openingDays }}" name="profileDetail.openingDays"
+                                           ng-model="profileDetail.openingDays">
+
+                                </div>
+                            </div>
+                            <div class="form-group"  style="margin-bottom:0.5%;">
+                                <div class="col-sm-offset-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6 col-sm-10 co-xs-10 col-md-10 col-lg-10">
+                                    <button type="submit" id="profileEditSubmit" class="btn btn-info" ng-click="editProfile()">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    </div>
+
+                <!--container div for the assign table menu content -->
+
+                <div class="nav navbar-nav collapse" id="assignTable">
+
+                    <!--container div for the assign table first page where the owner views the list of reservation -->
+
+                    <div id = "assignReservationTable" class = "container">
+                        <h4 align="center">Assign Reservation Table</h4>
+                        <form data-toggle="validator"class="form-horizontal" role="form">
+
+                            <!--container div where the owner provides the date for which he wants to check the reservation list and hits the view list button -->
+
+                            <div class="row">
+                                <div  class="form-group">
+                                    <div class =" col-sm-offset-4 col-xs-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                        <input required  class="form-control " id="dateAssignEdit" name="date" ng-model ="date" placeholder="dd-mm-yyyy">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-5 col-xs-offset-5 col-md-offset-5 col-lg-offset-5 col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                        <button type="button" class="portraitViewReserBtn btn btn-info col-sm-6 co-xs-6 col-md-6 col-lg-6" id="viewReservListBtn"
+                                            ng-click="getReservationListForTables()">View Reservation List</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!--container div for the scrollable list of reservation -->
+
+                        <div id ="assignreservDiv" style="display: none;" class="container full-height" ng-model="reservations">
+                            <div class="row full-height">
+                                <div class="col-md-11 full-height">
+                                    <div class="well" id="assignReserveList">
+                                        <div id="assignreservationList" class="list-group">
+                                            <div ng-repeat="res in reservations">
+                                                <a href='#'  ng-click="setResforTables(res)"
+                                                   onclick='viewDetailsofAssignReservation()'
+                                                   class='list-group-item'>
+                                                    <h4 class='list-group-item-heading'>{{res.time}}</h4>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--container div for the next screen where the owner can assign table by clicking on any row of list which shows the reservation detail -->
+
+                    <div id = "asignreservationDetails" style="display: none;" class = "container" ng-model="res">
+
+                        <h4 align="center">Reservation Detail</h4>
+                        <div class="row row-centered">
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.date}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.time}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Party Size:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.partySize}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Contact number:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.contactNumber}}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Status:</label>
+                                <a class="col-sm-4 co-xs-4 col-md-4 col-lg-4" href="#"  id ="statusIDassignEdit" data-toggle="tooltip"
+                                   data-placement="top" title="2 people are ahead of you in the reservation queue.
+                                   If they cancel their reservation you will be notified">{{res.reservationStatus.reservationStatus}}</a>
+
+                                <!--<label class="control-label col-sm-4" for="contact">Waiting</label>-->
+                            </div>
+                            <div class="col-sm-5 co-xs-5 col-md-5 col-lg-5 col-centered">
+                                <div class="col-sm-offset-2 col-xs-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info" id="backBtnAssignReserve">Back</button>
+                                </div>
+
+
+                                <div class="col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info" id="assignBtn" ng-click="getTableList(res)">Assign Table</button>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--container div for the scrollable list of table which the owner can assign when he/she clicks on the assign table button -->
+
+                    <div id="assigntablesDiv" style="display:none;" class="container full-height" ng-model="tableDetails">
+                        <h4 align="center">Table Details</h4>
+                        <div class="row full-height">
+                            <div class="col-md-11 full-height">
+                                <div class="well" id="assignTablesListDiv">
+                                    <div id="assignTablesList" class="list-group">
+                                        <div ng-repeat="table in tableDetails">
+                                            <div class='list-group-item'>
+                                                <h4 class='list-group-item-heading'>{{table.tableName}}</h4>
+                                                <div class='row'>
+                                                    <p class='col-sm-4  col-xs-4 col-md-4 col-lg-4'>
+                                                        <label>Since:</label>
+                                                        <label>{{table.since}}</label>
+                                                    </p>
+                                                    <p class='col-sm-2  col-xs-2 col-md-2 col-lg-2'>
+                                                        <label>Size:</label>
+                                                        <label>{{table.size}}</label>
+                                                    </p>
+                                                    <p class='col-sm-2  col-xs-2 col-md-2 col-lg-2'>
+                                                        <label>Status:</label>
+                                                        <label>{{table.status}}</label>
+                                                    </p>
+                                                    <p class='col-sm-3 col-xs-3 col-md-3 col-lg-3'>
+                                                        <button onclick = "hideView()" class='btn btn-info' type='button'
+                                                                ng-click='selectTable(tableDetails.confirmationCodeSelected,table.tableName)'>Select
+                                                        </button>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <!--container div for the view contact of the customers menu content -->
+
+                <div class="nav navbar-nav collapse" id="viewContact">
+
+                    <!--container div for the scrollable list showing the contact number of the customers of the restaurant -->
+
+                    <div id="viewContactListDiv" class="container full-height" ng-model="contacts">
+                        <h4 align="center">Contact List of the customers</h4>
+                        <div class="row full-height">
+                            <div class="col-md-11 full-height">
+                                <div class="well" id="contactListDiv">
+                                    <div id="viewContactList" class="list-group">
+                                        <div ng-repeat="contact in contacts">
+                                            <a onclick="viewReservationList()"
+                                               ng-click="getResForContact(contact)" href='#' class='list-group-item'>
+                                                <h4 class='list-group-item-heading'>{{contact}}</h4></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        </div>
+
+                    <!--container div for the reservation detail of the particular customers when the owner clicks on a particular row of the scrollable list -->
+
+                    <div id = "ReservationListofContact" style="display: none;" class = "container" ng-model="reservations">
+
+                        <h4 align="center">Reservation Detail</h4>
+                        <div class="row row-centered">
+                            <div  ng-repeat="res in reservations" class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">{{res.date}}</label>
+                            </div>
+                          <!--  <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">17-04-2015 12:30PM</label>
+                            </div>
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">11-10-2014 10:30AM</label>
+                            </div>
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="">Date Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="">13-06-2013 10:00AM</label>
+                            </div>-->
+
+                            <div class="col-sm-5 co-xs-5 col-md-5 col-lg-5 col-centered">
+                                <div class="col-sm-offset-4 col-xs-offset-4 col-md-offset-4 col-lg-offset-4  col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info" id="backBtnContact">Back</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </nav>
+            </div>
+        </div>
+    </div>
+
+<!--container div for the background rotating images -->
+
+    <div id="background_image_slider" class="carousel slide carousel-fade" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="active item" id="foodimage1">
+            </div>
+            <div class="item" id="foodimage2">
+            </div>
+            <div class="item" id="foodimage3">
+            </div>
+        </div>
+    </div>
+    </div>
+
+<!--container div for the popup of the confirmation of a reservation on hitting the confirm button from the create div -->
+
+
+<div class="modal fade" id="confirmPopupOwner" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Your reservation has been confirmed. Confirmation code is 2341</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--container div for the popup of the confirmation of a reservation on hitting the confirm button from the edit existing reservation div-->
+
+
+<div class="modal fade" id="confirmPopupOwnerEdit" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Your reservation has been confirmed. Confirmation code is 2341</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--container div for the popup of the cancel of a reservation on hitting the cancel button -->
+
+<div class="modal fade" id="cancelOwnerPopup" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Your reservation has been cancelled.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

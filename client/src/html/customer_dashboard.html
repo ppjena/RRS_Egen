@@ -1,0 +1,351 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link  rel="stylesheet" href="../css/lib/bootstrap.min.css" type="text/css">
+    <link  rel="stylesheet" href="../css/common.css" type="text/css">
+
+    <script type="text/javascript" src="../js/lib/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../js/lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/lib/bootstrap-validator.js"></script>
+    <script type="text/javascript" src="../js/customer.js"></script>
+
+    <!-- angular -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+    <script type="text/javascript" src="../js/controller/customer_controller.js"></script>
+
+    <script>
+        
+        $(document).ready(function(){
+            $( '#editMenu' ).click();
+            $( '#createMenu' ).click();
+
+            $(document).on("click","#generate_confirmation",function(){
+                generateConfirmation();
+            });
+        });
+
+    </script>
+</head>
+
+<body ng-app="RRS" ng-controller="customerController">
+<!--main container div for the customer dashboard -->
+
+<div id="" class="container-fluid container_body">
+    <div class="menu-div">
+
+        <!-- container div for the menu -->
+
+        <div class="container portraitMenuContainer">
+            <nav style="border-top-left-radius: 5px;border-top-right-radius: 5px;"class="navbar navbar-default" role="navigation" id="topmenu">
+                <ul class="nav navbar-nav">
+                    <li id="liMenu" class="dropdown">
+
+                        <a id ="createMenu" href="#" data-toggle="collapse" data-target="#create">Create</a>
+                    </li>
+                    <li class="dropdown">
+                        <a id ="editMenu" href="#" data-toggle="collapse" data-target="#edit">Edit/Cancel</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- container div for the menu content -->
+
+        <div class="container portraitMenuContainer">
+            <nav class="navbar navbar-default" role="navigation" id="submenu">
+
+                <!-- nav div for the create content -->
+
+                <div class="nav navbar-nav collapse" id="create">
+
+                    <!-- container div for the first page of the create reservation div where the user inputs all the desire inputs and hits the create button -->
+
+                    <div id="createDiv" class="container">
+                        <h4 align="center">Create Reservation</h4>
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="date">Date:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input required  class="form-control" id="date" placeholder="eg: 01-01-2016"
+                                    ng-model="res.date" name ="res.date">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="time">Time:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input required  class="form-control" id="time" placeholder="eg: 10:10 AM"
+                                           ng-model="res.time" name ="res.time">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="size">Party Size:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="number" required  class="form-control" id="size" placeholder="eg: 1"
+                                           ng-model="res.partySize" name ="res.partySize">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="contact">Contact number:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="tel" required class="form-control" id="contact" placeholder="eg:919-111-1111"
+                                           ng-model="res.contactNumber" name ="res.contactNumber">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6 col-sm-10 co-xs-10 col-md-10 col-lg-10">
+
+                                    <button id ="generate_confirmation" class="btn btn-info" ng-click="createReservation()">Create</button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- container div for the customer dashboard where the user is navigated after he/she creates a reservation -->
+
+                    <div id="confirmDiv" style="display:none;" class="container" n>
+                        <h4 align="center">Confirmation</h4>
+                        <div class="row row-centered">
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="date">Date:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="date">{{ res.date }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="time">Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="time">{{ res.time }}</label>
+                            </div>
+                            <div class="col-sm-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="size">Party Size:</label>
+                                 <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="size">{{ res.partySize }}</label>
+                            </div>
+                            <div class="col-sm-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="contact">Contact number:</label>
+
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="contact">{{ res.contactNumber }}</label>
+                            </div>
+                            <div class="col-sm-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="contact">Status:</label>
+                                <a class="col-sm-4" href="#"  id ="statusID" data-toggle="tooltip" data-placement="top"
+                                   title="2 people are ahead of you in the reservation queue.
+                                    If they cancel their reservation you will be notified">{{ res.reservationStatus.reservationStatus }}</a>
+
+                            </div>
+                            <div class="col-sm-6 co-xs-6 col-md-6 col-lg-6 col-centered">
+                                <div class="col-sm-offset-2 col-xs-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info" id="backBtn">Back</button>
+                                </div>
+                                <div class="col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info"  data-toggle="modal" data-target="#confirmPopup" id="confirmBtn">Confirm</button>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--end of nav div for the create content -->
+
+
+                <!-- nav div for the edit content -->
+
+                <div class="nav navbar-nav collapse" id="edit">
+
+
+                    <!--container div for the 1st page of edit div where the user gives the confirmation code-->
+
+                        <div id = "edit_cancelDiv" class = "container">
+                        <h4 align="center">Edit/Cancel Reservation</h4>
+                        <form class="form-horizontal" role="form">
+                            <div  class="form-group">
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4 " for="confirmCode">Confirmation Code:</label>
+                                <div class="col-sm-5 co-xs-5 col-md-5 col-lg-5">
+                                    <input required  class="form-control" id="confirmCode" name="confirmCode" ng-model ="confirmCode"
+                                           placeholder="Confirmation code">
+                                    <div class="help-block with-errors"></div>
+                                </div> </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-5 col-xs-offset-5 col-md-offset-5 col-lg-offset-5 col-sm-2 co-xs-2 col-md-2 col-lg-2">
+                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#cancelPopup" id="cancelBtn">Cancel</button>
+                            </div>
+                            <div class="col-sm-5 co-xs-5 col-md-5 col-lg-5">
+                                <button class="btn btn-info" id="editBtn" ng-click="getReservation()">Edit</button>
+
+
+                            </div>
+                        </div>
+
+                        </form>
+                        </div>
+
+
+                    <!--container div which shows after the user hits the edit button where he/she can edit the fields -->
+
+                    <div id="editDiv" class = "container" style = "display:none" ng-model="res">
+                        <h4 align="center">Edit Reservation</h4>
+                        <form data-toggle="validator"class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="date">Date:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="date" required  class="form-control" id="dateEdit" value="{{ res.date }}" name="res.date"
+                                           ng-model="res.date">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="time">Time:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="time" required  class="form-control" id="timeEdit" value="{{ res.time }}"
+                                           name="res.time" ng-model="res.time">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3 co-xs-3 col-md-3 col-lg-3" for="size">Party Size:</label>
+                                <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7">
+                                    <input type="number" required  class="form-control" id="sizeEdit" value="{{ res.partySize }}"
+                                           name="res.partySize" ng-model="res.partySize">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <input type="hidden" id="editConfirmationCode" value="{{ res.reservationStatus.confirmationCode }}"
+                                       name="res.reservationStatus.confirmationCode" ng-model="res.reservationStatus.confirmationCode">
+                                <input type="hidden" id="editContactNumber" value="{{ res.contactNumber }}"
+                                       name="res.contactNumber" ng-model="res.contactNumber">
+
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-6 col-xs-offset-6 col-md-offset-6 col-lg-offset-6 col-sm-10 co-xs-10 col-md-10 col-lg-10">
+                                    <button id="editSubmit" class="btn btn-info" ng-click="editReservation()">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <!--container div for the confirmation screen when the user edits and hits the button save -->
+
+                    <div id="confirmEditDiv" style="display:none;" class="container" ng-model="res">
+                        <h4 align="center">Confirmation</h4>
+                        <div class="row row-centered">
+                            <div  class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="date">Date:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="date">{{ res.date }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="time">Time:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="time">{{ res.time }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="size">Party Size:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="size">{{ res.partySize }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="contact">Contact number:</label>
+                                <label class="control-label col-sm-4 co-xs-4 col-md-4 col-lg-4" for="contact">{{ res.contactNumber }}</label>
+                            </div>
+                            <div class="col-sm-7 co-xs-7 col-md-7 col-lg-7 col-centered">
+                                <label class="control-label col-sm-8 co-xs-8 col-md-8 col-lg-8" for="contact">Status:</label>
+                                <a class="col-sm-4 co-xs-4 col-md-4 col-lg-4" href="#"
+                                   id ="statusIDEdit" data-toggle="tooltip" data-placement="top"
+                                   title="2 people are ahead of you in the reservation queue. If they cancel their reservation you will be notified">
+                                    {{res.reservationStatus.reservationStatus}}
+                                </a>
+
+                            </div>
+                            <div class="col-sm-6 co-xs-6 col-md-6 col-lg-6 col-centered">
+                                <div class="col-sm-offset-2 col-xs-offset-2 col-md-offset-2 col-lg-offset-2  col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info" id="backBtnEdit">Back</button>
+                                </div>
+                                <div class=" col-sm-4 co-xs-4 col-md-4 col-lg-4">
+                                    <button type="button" class="btn btn-info"  data-toggle="modal" data-target="#confirmPopupEdit" id="confirmBtnEdit">Confirm</button>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--end of nav div for the edit content -->
+
+            </nav>
+        </div>
+
+    </div>
+
+
+    <!--container div for the background rotating images -->
+
+    <div id="background_image_slider" class="carousel slide carousel-fade" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="active item" id="foodimage1">
+            </div>
+            <div class="item" id="foodimage2">
+            </div>
+            <div class="item" id="foodimage3">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--container div for the popup of the confirmation of a reservation on hitting the confirm button from the create page -->
+
+<div class="modal fade" id="confirmPopup" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Your reservation has been confirmed. Confirmation code is 2341</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--container div for the popup of the confirmation of a reservation on hitting the confirm button from the edit page-->
+
+<div class="modal fade" id="confirmPopupEdit" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Your reservation has been confirmed. Confirmation code is 2341</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--container div for the popup of the cancel of a reservation on hitting the cancel button -->
+
+<div class="modal fade" id="cancelPopup" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Your reservation has been cancelled.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
