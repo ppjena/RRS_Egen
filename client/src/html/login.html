@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link  rel="stylesheet" href="../css/lib/bootstrap.min.css" type="text/css">
+    <link  rel="stylesheet" href="../css/common.css" type="text/css">
+    <link  rel="stylesheet" href="../css/login.css" type="text/css">
+
+    <script type="text/javascript" src="../js/lib/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../js/lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/lib/bootstrap-validator.js"></script>
+    <script type="text/javascript" src="../js/login.js"></script>
+
+    <!-- angular -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+    <script type="text/javascript" src="../js/controller/login_controller.js"></script>
+</head>
+
+<body ng-app="RRS" ng-controller="loginController">
+<!--container div for the login screen -->
+
+<div id="" class="container-fluid container_body">
+
+    <!--container div for the login box to the left of the screen -->
+
+    <div class = "row">
+        <div class ="col-sm-5 col-md-5 col-lg-5  col-xs-5">
+        <div id="login-div" class="container">
+
+                <h3 align="center"> Owner Login</h3>
+                <form style="margin-top:10%;" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="portraitLabel control-label col-sm-4 col-xs-4 col-md-4 col-lg-4" for="username">Username:</label>
+                        <div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
+                            <input type="email" required  class="form-control" id="username"  name="username" ng-model ="username" placeholder="Enter email id">
+                            <div class="help-block with-errors"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="portraitLabel control-label col-sm-4 col-xs-4 col-md-4 col-lg-4" for="pwd">Password:</label>
+                        <div class="col-sm-6 col-xs-6 col-md-6 col-lg-6">
+                            <input type="password" required  class="form-control" id="pwd" name="pwd" ng-model ="pwd" placeholder="Enter password">
+                            <div class="help-block with-errors"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-5 col-xs-offset-5 col-md-offset-5 col-lg-offset-5 col-sm-10 col-xs-10 col-md-10 col-lg-10">
+                            <button id="loginBtn" style="color:black;font-weight:bold;" type="button" class="btn btn-info" ng-click="login()">Login</button>
+                        </div>
+                    </div>
+                    </form>
+            </div>
+        </div>
+
+        <!--container div for the name, address and the click for reservation button -->
+
+        <div style ="color:#f7e1b5;" class ="col-sm-5 col-xs-5 col-md-5 col-lg-5">
+            <div style="position:absolute;padding-top:5%;">
+                <h1 align ="center" style=" font-weight:bold;font-family: 'Comic Sans',Coronetscript,cursive; font-size:5em;">Grill to Chill</h1>
+                <h3>Near Aviation Parkway, Morrisville</h3>
+                <h3>NC, 27650, Ph-(919)-543-6378</h3>
+                <h3>Email : grill2chill@gmail.com</h3>
+                <button id="reserveBtn" style="color:black;font-weight:bold;font-size:2em;margin:6% 0 0 6%;" type="button" class="btn btn-lg">Click here for reservation</button>
+            </div>
+        </div>
+    </div>
+
+    <!--container div for the background rotating images -->
+
+    <div style="" id="background_image_slider" class="carousel slide carousel-fade" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="active item" id="foodimage1">
+            </div>
+            <div class="item" id="foodimage2">
+            </div>
+            <div class="item" id="foodimage3">
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
